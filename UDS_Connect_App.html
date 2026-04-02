@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UDS Connect — University for Development Studies</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --g:#1D9E75;--gd:#085041;--gl:#E1F5EE;
+  --gold:#EF9F27;--goldl:#FAEEDA;
+  --bg:#F8FAF9;--bgc:#fff;--bgs:#F3F6F5;
+  --txt:#1A1A1A;--txt2:#5A6472;--txt3:#9AA3AD;
+  --bdr:#E5EAE8;--bdr2:#CDD5D2;
+  --rad:10px;--rad-lg:14px;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;}
+
+/* AUTH */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+.auth-card{display:flex;max-width:880px;width:100%;border-radius:18px;overflow:hidden;box-shadow:0 8px 48px rgba(0,0,0,0.12);}
+.auth-left{width:300px;min-width:300px;background:#085041;padding:40px 32px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+.auth-left::before{content:'';position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,0.05);top:-90px;right:-90px;}
+.auth-left::after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:40px;left:-70px;}
+.brand-logo{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.5px;position:relative;z-index:1;}
+.brand-logo span{color:#EF9F27;}
+.brand-tagline{font-size:11.5px;color:rgba(255,255,255,0.5);margin-top:4px;position:relative;z-index:1;}
+.brand-copy{position:relative;z-index:1;}
+.brand-headline{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:16px;}
+.feat{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.feat-dot{width:6px;height:6px;border-radius:50%;background:#EF9F27;margin-top:7px;flex-shrink:0;}
+.feat-text{font-size:13px;color:rgba(255,255,255,0.7);line-height:1.5;}
+.brand-foot{font-size:11px;color:rgba(255,255,255,0.3);position:relative;z-index:1;}
+.auth-right{flex:1;background:#fff;padding:40px 40px;display:flex;flex-direction:column;justify-content:center;}
+.tab-row{display:flex;border-bottom:1px solid var(--bdr);margin-bottom:28px;}
+.tab-btn{padding:10px 0;margin-right:24px;font-size:14px;font-weight:500;color:var(--txt2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;font-family:'Plus Jakarta Sans',sans-serif;transition:color .15s;}
+.tab-btn.active{color:var(--g);border-bottom-color:var(--g);}
+.form{display:none;}
+.form.active{display:block;}
+.flabel{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:6px;}
+.fgroup{margin-bottom:16px;}
+.finput{width:100%;padding:10px 14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;border:1px solid var(--bdr);border-radius:var(--rad);background:var(--bgs);color:var(--txt);outline:none;transition:border-color .15s,box-shadow .15s;}
+.finput:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(29,158,117,0.12);}
+.finput.ok{border-color:var(--g);}
+.finput.err{border-color:#E24B4A;box-shadow:0 0 0 3px rgba(226,75,74,0.1);}
+.fhint{font-size:11.5px;color:var(--txt3);margin-top:5px;}
+.ferr{font-size:11.5px;color:#E24B4A;margin-top:5px;display:none;}
+.fsuc{font-size:11.5px;color:var(--g);margin-top:5px;display:none;}
+.id-box{background:var(--bgs);border:1px solid var(--bdr);border-radius:var(--rad);padding:10px 14px;margin-top:8px;font-size:12.5px;display:none;}
+.id-box.show{display:block;}
+.id-row{display:flex;justify-content:space-between;margin-bottom:4px;}
+.id-k{color:var(--txt2);}
+.id-v{font-weight:500;color:var(--txt);}
+.fselect{width:100%;padding:10px 14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;border:1px solid var(--bdr);border-radius:var(--rad);background:var(--bgs);color:var(--txt);outline:none;cursor:pointer;}
+.btn-main{width:100%;padding:11px;background:var(--g);color:#fff;border:none;border-radius:var(--rad);font-size:14px;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;margin-top:6px;transition:background .15s;}
+.btn-main:hover{background:var(--gd);}
+.irow{display:flex;gap:10px;}
+.irow .fgroup{flex:1;}
+.step-bar{display:flex;gap:6px;margin-bottom:22px;}
+.step-seg{height:3px;flex:1;border-radius:2px;background:var(--bdr);transition:background .3s;}
+.step-seg.done{background:var(--g);}
+.otp-row{display:flex;gap:8px;justify-content:center;margin-bottom:8px;}
+.otp-in{width:44px;height:50px;text-align:center;font-size:22px;font-weight:700;font-family:'Syne',sans-serif;border:1px solid var(--bdr);border-radius:var(--rad);background:var(--bgs);color:var(--txt);outline:none;transition:border-color .15s,box-shadow .15s;}
+.otp-in:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(29,158,117,0.12);}
+.suc-screen{display:none;text-align:center;padding:20px 0;}
+.suc-icon{width:60px;height:60px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;}
+.suc-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--txt);margin-bottom:8px;}
+.suc-sub{font-size:14px;color:var(--txt2);line-height:1.6;}
+
+/* MAIN APP */
+#app-screen{display:none;min-height:100vh;}
+.topnav{background:#085041;padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.nav-logo span{color:#EF9F27;}
+.nav-links{display:flex;gap:4px;}
+.nav-link{padding:6px 12px;border-radius:20px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.7);border:none;background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s,color .15s;}
+.nav-link:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.nav-link.active{background:rgba(255,255,255,0.15);color:#fff;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;border:2px solid rgba(255,255,255,0.3);}
+.app-body{max-width:1100px;margin:0 auto;padding:24px 20px;display:flex;gap:20px;}
+.main-col{flex:1;min-width:0;}
+.side-col{width:240px;min-width:240px;}
+.page{display:none;}
+.page.active{display:block;}
+.card{background:#fff;border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:16px;}
+.card+.card,.post-card+.post-card{margin-top:12px;}
+.post-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:16px;margin-bottom:12px;}
+.post-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ava{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0;}
+.ava.sm{width:28px;height:28px;font-size:11px;}
+.ava.lg{width:48px;height:48px;font-size:17px;}
+.post-meta-name{font-size:13.5px;font-weight:500;color:var(--txt);}
+.post-meta-time{font-size:12px;color:var(--txt3);}
+.badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;white-space:nowrap;}
+.b-blue{background:#E6F1FB;color:#185FA5;}
+.b-green{background:var(--gl);color:var(--gd);}
+.b-gold{background:var(--goldl);color:#633806;}
+.b-red{background:#FCEBEB;color:#791F1F;}
+.b-new{background:var(--gl);color:var(--gd);}
+.post-body{font-size:14px;color:var(--txt);line-height:1.65;margin-bottom:12px;}
+.post-actions{display:flex;gap:4px;}
+.pact{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--rad);border:none;background:none;font-size:12.5px;color:var(--txt2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s,color .15s;}
+.pact:hover{background:var(--bgs);color:var(--txt);}
+.pact.liked{color:#D4537E;}
+.compose{background:#fff;border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;}
+.compose-ta{flex:1;border:none;background:none;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--txt);resize:none;outline:none;min-height:52px;}
+.compose-ta::placeholder{color:var(--txt3);}
+.compose-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--bdr);}
+.compose-tools{display:flex;gap:6px;}
+.ctool{padding:5px 10px;border-radius:var(--rad);border:1px solid var(--bdr);font-size:12px;cursor:pointer;background:none;color:var(--txt2);font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;}
+.ctool:hover{background:var(--bgs);color:var(--txt);}
+.btn-post{padding:7px 16px;background:var(--g);color:#fff;border:none;border-radius:var(--rad);font-size:13px;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:background .15s;}
+.btn-post:hover{background:var(--gd);}
+.btn{padding:7px 14px;background:#fff;color:var(--txt);border:1px solid var(--bdr);border-radius:var(--rad);font-size:13px;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:background .15s;}
+.btn:hover{background:var(--bgs);}
+.btn.primary{background:var(--g);color:#fff;border-color:var(--g);}
+.btn.primary:hover{background:var(--gd);border-color:var(--gd);}
+.btn.sm{padding:5px 12px;font-size:12px;}
+.btn.pill{border-radius:20px;}
+.section-label{font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--txt);}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--bgs);border:1px solid var(--bdr);border-radius:20px;padding:7px 14px;margin-bottom:16px;}
+.search-bar input{flex:1;border:none;background:none;font-size:13.5px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--txt);outline:none;}
+.search-bar input::placeholder{color:var(--txt3);}
+.event-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:14px 16px;margin-bottom:10px;display:flex;gap:14px;align-items:center;}
+.edate{min-width:48px;height:52px;background:var(--gl);border-radius:var(--rad);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.emo{font-size:10px;font-weight:600;color:var(--g);text-transform:uppercase;}
+.edy{font-size:22px;font-weight:800;font-family:'Syne',sans-serif;color:var(--gd);line-height:1;}
+.etitle{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px;}
+.edet{font-size:12px;color:var(--txt2);}
+.emeta{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;}
+.chat-wrap{display:flex;height:520px;border:1px solid var(--bdr);border-radius:var(--rad-lg);overflow:hidden;}
+.chat-list{width:210px;border-right:1px solid var(--bdr);overflow-y:auto;}
+.chat-thread{flex:1;display:flex;flex-direction:column;background:#fff;}
+.chat-head{padding:12px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bgs);}
+.citem{padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bdr);background:#fff;transition:background .15s;}
+.citem:hover,.citem.active{background:var(--gl);}
+.citem-name{font-size:13px;font-weight:500;color:var(--txt);}
+.citem-prev{font-size:11.5px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
+.msg{max-width:72%;padding:9px 13px;border-radius:14px;font-size:13.5px;line-height:1.5;}
+.msg.in{background:#fff;color:var(--txt);align-self:flex-start;border-bottom-left-radius:4px;border:1px solid var(--bdr);}
+.msg.out{background:var(--g);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.msg-time{font-size:10px;opacity:.6;margin-top:3px;text-align:right;}
+.chat-input-row{padding:10px;border-top:1px solid var(--bdr);display:flex;gap:8px;background:#fff;}
+.chat-in{flex:1;padding:8px 14px;font-size:13.5px;font-family:'Plus Jakarta Sans',sans-serif;border:1px solid var(--bdr);border-radius:20px;background:var(--bgs);color:var(--txt);outline:none;}
+.profile-banner{height:110px;background:linear-gradient(135deg,#1D9E75 0%,#085041 100%);border-radius:var(--rad-lg);margin-bottom:-36px;}
+.profile-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:50px 20px 20px;position:relative;margin-bottom:16px;}
+.profile-ava{position:absolute;top:-38px;left:20px;width:76px;height:76px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;border:3px solid #fff;}
+.pname{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--txt);}
+.pid{font-size:13px;color:var(--txt2);margin-top:2px;}
+.pbio{font-size:13.5px;color:var(--txt2);margin:10px 0;line-height:1.6;}
+.pstats{display:flex;margin-top:14px;}
+.pstat{flex:1;text-align:center;border-right:1px solid var(--bdr);}
+.pstat:last-child{border-right:none;}
+.pstat-n{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--g);}
+.pstat-l{font-size:11px;color:var(--txt3);margin-top:2px;}
+.clubs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.club-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:16px;}
+.club-icon{width:42px;height:42px;border-radius:var(--rad);background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px;}
+.club-name{font-size:14px;font-weight:500;color:var(--txt);}
+.club-mem{font-size:12px;color:var(--txt2);margin-top:3px;}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+.item-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--rad-lg);overflow:hidden;cursor:pointer;transition:border-color .15s;}
+.item-card:hover{border-color:var(--g);}
+.item-img{height:100px;background:var(--bgs);display:flex;align-items:center;justify-content:center;font-size:30px;}
+.item-body{padding:10px;}
+.item-name{font-size:13px;font-weight:500;color:var(--txt);margin-bottom:4px;}
+.item-price{font-size:15px;font-weight:700;color:var(--g);font-family:'Syne',sans-serif;}
+.item-seller{font-size:11px;color:var(--txt2);margin-top:2px;}
+.lf-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:14px 16px;margin-bottom:10px;display:flex;gap:14px;align-items:center;}
+.lf-icon{width:50px;height:50px;border-radius:var(--rad);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.lf-lost{background:#FCEBEB;}
+.lf-found{background:var(--gl);}
+.lf-title{font-size:14px;font-weight:500;color:var(--txt);}
+.lf-desc{font-size:12.5px;color:var(--txt2);margin-top:2px;line-height:1.5;}
+.lf-meta{margin-top:6px;display:flex;gap:8px;}
+.sugg-item{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.sugg-name{font-size:13px;font-weight:500;color:var(--txt);}
+.sugg-dept{font-size:11px;color:var(--txt2);}
+.follow-btn{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--g);color:var(--g);background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;transition:background .15s,color .15s;}
+.follow-btn:hover{background:var(--g);color:#fff;}
+.trend-item{font-size:13px;color:var(--txt);margin-bottom:7px;}
+.trend-item span{color:var(--txt3);font-size:12px;}
+.divider{height:1px;background:var(--bdr);margin:12px 0;}
+.panel-title{font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH SCREEN ===== -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-left">
+      <div>
+        <div class="brand-logo">UDS <span>Connect</span></div>
+        <div class="brand-tagline">University for Development Studies · Tamale</div>
+      </div>
+      <div class="brand-copy">
+        <div class="brand-headline">Your entire campus, in one place.</div>
+        <div class="feat"><div class="feat-dot"></div><div class="feat-text">Connect with classmates across all faculties</div></div>
+        <div class="feat"><div class="feat-dot"></div><div class="feat-text">Stay up to date with campus events</div></div>
+        <div class="feat"><div class="feat-dot"></div><div class="feat-text">Trade, sell and find lost items on campus</div></div>
+        <div class="feat"><div class="feat-dot"></div><div class="feat-text">Join clubs, study groups and communities</div></div>
+      </div>
+      <div class="brand-foot">Exclusively for UDS students &amp; staff</div>
+    </div>
+    <div class="auth-right">
+      <div class="tab-row">
+        <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
+      </div>
+      <!-- LOGIN -->
+      <div id="form-login" class="form active">
+        <div id="login-s1">
+          <div class="fgroup">
+            <label class="flabel">Student / Staff ID</label>
+            <input class="finput" id="lin-id" type="text" placeholder="UDS/CS/21/0042" oninput="vlid(this,'lin-id-err','lin-id-box')">
+            <div id="lin-id-err" class="ferr">Invalid UDS ID. Format: UDS/[Faculty]/[Year]/[Number]</div>
+            <div id="lin-id-box" class="id-box"></div>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Password</label>
+            <input class="finput" id="lin-pass" type="password" placeholder="Enter your password">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--txt2);cursor:pointer;"><input type="checkbox" style="accent-color:var(--g);"> Remember me</label>
+            <span style="font-size:13px;color:var(--g);cursor:pointer;">Forgot password?</span>
+          </div>
+          <button class="btn-main" onclick="doLogin()">Sign In to UDS Connect</button>
+          <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--txt3);">Only verified UDS students &amp; staff can access this platform.</div>
+        </div>
+        <div id="login-suc" class="suc-screen">
+          <div class="suc-icon">✓</div>
+          <div class="suc-title">Welcome back, Kwame!</div>
+          <div class="suc-sub">Signed in as UDS/CS/21/0042<br>Computer Science · Level 400</div>
+          <button class="btn-main" style="max-width:220px;margin:20px auto 0;" onclick="enterApp()">Open UDS Connect →</button>
+        </div>
+      </div>
+      <!-- SIGNUP -->
+      <div id="form-signup" class="form">
+        <div id="reg-s1">
+          <div style="font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:12px;">Step 1 of 3 — Verify your UDS identity</div>
+          <div class="step-bar"><div class="step-seg done"></div><div class="step-seg" id="rs2"></div><div class="step-seg" id="rs3"></div></div>
+          <div class="fgroup">
+            <label class="flabel">Student ID Number</label>
+            <input class="finput" id="reg-id" type="text" placeholder="UDS/CS/21/0042" oninput="vlid(this,'reg-id-err','reg-id-box')">
+            <div id="reg-id-err" class="ferr">Format: UDS/[2-4 letter code]/[2-digit year]/[4-digit number]</div>
+            <div id="reg-id-box" class="id-box"></div>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">UDS Email Address</label>
+            <input class="finput" id="reg-email" type="text" placeholder="yourname@st.uds.edu.gh" oninput="vemail(this)">
+            <div id="reg-email-err" class="ferr">Must be a valid UDS email (@st.uds.edu.gh or @uds.edu.gh)</div>
+            <div id="reg-email-suc" class="fsuc">✓ Valid UDS email address</div>
+          </div>
+          <button class="btn-main" onclick="goReg2()">Continue →</button>
+        </div>
+        <div id="reg-s2" style="display:none;">
+          <div style="font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:12px;">Step 2 of 3 — Your details</div>
+          <div class="step-bar"><div class="step-seg done"></div><div class="step-seg done"></div><div class="step-seg"></div></div>
+          <div class="irow"><div class="fgroup"><label class="flabel">First Name</label><input class="finput" type="text" placeholder="Kwame"></div><div class="fgroup"><label class="flabel">Last Name</label><input class="finput" type="text" placeholder="Asante"></div></div>
+          <div class="fgroup">
+            <label class="flabel">Faculty / Department</label>
+            <select class="fselect"><option value="">— Select your faculty —</option><option>Faculty of Mathematical Sciences (CS)</option><option>Faculty of Agriculture</option><option>Faculty of Law</option><option>Faculty of Business and Management Studies</option><option>School of Medicine and Health Sciences</option><option>Faculty of Education</option><option>Faculty of Engineering</option><option>Institute for Development Studies</option></select>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Level</label>
+            <select class="fselect"><option>Level 100</option><option>Level 200</option><option>Level 300</option><option selected>Level 400</option><option>Postgraduate</option><option>Staff</option></select>
+          </div>
+          <button class="btn-main" onclick="goReg3()">Continue →</button>
+        </div>
+        <div id="reg-s3" style="display:none;">
+          <div style="font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:12px;">Step 3 of 3 — Verify your email</div>
+          <div class="step-bar"><div class="step-seg done"></div><div class="step-seg done"></div><div class="step-seg done"></div></div>
+          <div style="text-align:center;margin-bottom:20px;font-size:13.5px;color:var(--txt2);line-height:1.6;">A 6-digit code was sent to<br><strong style="color:var(--txt);" id="otp-eml"></strong></div>
+          <div class="otp-row"><input class="otp-in" maxlength="1" oninput="om(this,1)"><input class="otp-in" maxlength="1" oninput="om(this,2)"><input class="otp-in" maxlength="1" oninput="om(this,3)"><input class="otp-in" maxlength="1" oninput="om(this,4)"><input class="otp-in" maxlength="1" oninput="om(this,5)"><input class="otp-in" maxlength="1" oninput="om(this,6)"></div>
+          <div style="text-align:center;font-size:12px;color:var(--txt3);margin:10px 0 16px;">Didn't get it? <span style="color:var(--g);cursor:pointer;">Resend code</span></div>
+          <button class="btn-main" onclick="doRegister()">Create My Account</button>
+        </div>
+        <div id="reg-suc" class="suc-screen">
+          <div class="suc-icon">🎓</div>
+          <div class="suc-title">You're in!</div>
+          <div class="suc-sub">Your UDS Connect account has been created.<br>Welcome to the UDS community!</div>
+          <button class="btn-main" style="max-width:220px;margin:20px auto 0;" onclick="enterApp()">Open UDS Connect →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app-screen">
+  <nav class="topnav">
+    <div class="nav-logo">UDS <span>Connect</span></div>
+    <div class="nav-links">
+      <button class="nav-link active" id="nl-feed" onclick="navigate('feed',this)">Feed</button>
+      <button class="nav-link" id="nl-events" onclick="navigate('events',this)">Events</button>
+      <button class="nav-link" id="nl-chat" onclick="navigate('chat',this)">Messages</button>
+      <button class="nav-link" id="nl-clubs" onclick="navigate('clubs',this)">Clubs</button>
+      <button class="nav-link" id="nl-market" onclick="navigate('market',this)">Marketplace</button>
+      <button class="nav-link" id="nl-lostfound" onclick="navigate('lostfound',this)">Lost & Found</button>
+      <button class="nav-link" id="nl-profile" onclick="navigate('profile',this)">My Profile</button>
+    </div>
+    <div class="nav-right">
+      <span style="font-size:12px;color:rgba(255,255,255,0.6);">Kwame Asante</span>
+      <div class="nav-avatar">KA</div>
+    </div>
+  </nav>
+
+  <div class="app-body">
+    <div class="main-col">
+
+      <!-- FEED -->
+      <div id="page-feed" class="page active">
+        <div class="topbar"><div class="page-title">Campus Feed</div><button class="btn">🔔 Notifications</button></div>
+        <div class="compose">
+          <div class="ava" style="background:var(--g);">KA</div>
+          <div style="flex:1;">
+            <textarea class="compose-ta" placeholder="What's happening on campus today?"></textarea>
+            <div class="compose-foot">
+              <div class="compose-tools">
+                <button class="ctool">📷 Photo</button>
+                <button class="ctool">🎫 Event</button>
+                <button class="ctool">🗂 Poll</button>
+              </div>
+              <button class="btn-post" onclick="addPost()">Post</button>
+            </div>
+          </div>
+        </div>
+        <div id="feed-posts">
+          <div class="post-card">
+            <div class="post-head"><div class="ava" style="background:#533489;">PA</div><div style="flex:1;"><div class="post-meta-name">Prof. Ama Boateng</div><div class="post-meta-time">Computer Science Dept · 2h ago</div></div><span class="badge b-blue">Academic</span></div>
+            <div class="post-body">Reminder: Final year project proposal presentations are scheduled for <strong>Friday 9th April</strong> in the ICT Lab. All Level 400 students must submit abstracts by Thursday EOD. Good luck to everyone!</div>
+            <div class="post-actions"><button class="pact" onclick="tl(this)">👍 Like · <span>24</span></button><button class="pact">💬 Comment · 8</button><button class="pact">↗ Share</button></div>
+          </div>
+          <div class="post-card">
+            <div class="post-head"><div class="ava" style="background:#EF9F27;">JN</div><div style="flex:1;"><div class="post-meta-name">Josephine Nkrumah</div><div class="post-meta-time">Agriculture · 4h ago</div></div><span class="badge b-green">Event</span></div>
+            <div class="post-body">The UDS Agriculture Fair is TOMORROW at the Main Quad from 10am. Come see amazing student projects, buy fresh produce, and win prizes! Free entry for all UDS students 🌱</div>
+            <div style="height:120px;background:var(--bgs);border-radius:var(--rad);margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--txt3);">🌾 Agriculture Fair Banner</div>
+            <div class="post-actions"><button class="pact liked">❤️ Like · <span>61</span></button><button class="pact">💬 Comment · 14</button><button class="pact">↗ Share</button></div>
+          </div>
+          <div class="post-card">
+            <div class="post-head"><div class="ava" style="background:#D85A30;">EB</div><div style="flex:1;"><div class="post-meta-name">Emmanuel Badu</div><div class="post-meta-time">Business · Level 300 · 6h ago</div></div><span class="badge b-red">Lost</span></div>
+            <div class="post-body">Lost my blue scientific calculator (CASIO fx-991ES) somewhere between the library and the Faculty of Business. If found please contact me urgently. I have an exam tomorrow 😰</div>
+            <div class="post-actions"><button class="pact" onclick="tl(this)">👍 Like · <span>5</span></button><button class="pact">💬 Comment · 3</button><button class="pact">↗ Share</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EVENTS -->
+      <div id="page-events" class="page">
+        <div class="topbar"><div class="page-title">Campus Events</div><button class="btn primary">+ Create Event</button></div>
+        <div class="search-bar"><span style="color:var(--txt3);">🔍</span><input type="text" placeholder="Search events..."></div>
+        <div class="section-label" style="margin-bottom:10px;">This Week</div>
+        <div class="event-card"><div class="edate"><div class="emo">APR</div><div class="edy">5</div></div><div style="flex:1;"><div class="etitle">Agriculture Fair 2025</div><div class="edet">Main Quad, Tamale Campus · 10:00am – 4:00pm</div><div class="emeta"><span class="badge b-green">Open to all</span><span class="badge b-gold">Free entry</span></div></div><button class="btn primary sm">RSVP</button></div>
+        <div class="event-card"><div class="edate"><div class="emo">APR</div><div class="edy">9</div></div><div style="flex:1;"><div class="etitle">L400 Project Presentations</div><div class="edet">ICT Lab, CS Department · 8:00am – 5:00pm</div><div class="emeta"><span class="badge b-blue">Academic</span><span class="badge b-red">Level 400 only</span></div></div><button class="btn sm">Remind me</button></div>
+        <div class="event-card"><div class="edate"><div class="emo">APR</div><div class="edy">11</div></div><div style="flex:1;"><div class="etitle">UDS Tech Talk: AI in Africa</div><div class="edet">Auditorium A · 2:00pm – 5:00pm</div><div class="emeta"><span class="badge b-blue">Tech</span><span class="badge b-green">Speaker series</span></div></div><button class="btn primary sm">RSVP</button></div>
+        <div class="section-label" style="margin:16px 0 10px;">Coming Up</div>
+        <div class="event-card"><div class="edate"><div class="emo">APR</div><div class="edy">20</div></div><div style="flex:1;"><div class="etitle">UDS vs UTG Inter-University Football</div><div class="edet">Sports Ground, Tamale · 3:00pm</div><div class="emeta"><span class="badge b-gold">Sports</span><span class="badge b-green">Free entry</span></div></div><button class="btn sm">Remind me</button></div>
+      </div>
+
+      <!-- CHAT -->
+      <div id="page-chat" class="page">
+        <div class="topbar"><div class="page-title">Messages</div><button class="btn primary">+ New Message</button></div>
+        <div class="chat-wrap">
+          <div class="chat-list">
+            <div class="citem active"><div class="ava sm" style="background:#533489;">AD</div><div style="flex:1;min-width:0;"><div class="citem-name">Adwoa Duah</div><div class="citem-prev">Did you finish the algo assignment?</div></div></div>
+            <div class="citem"><div class="ava sm" style="background:var(--gold);">CS</div><div style="flex:1;min-width:0;"><div class="citem-name">CS Study Group</div><div class="citem-prev">Meeting at 4pm in Lab 3</div></div></div>
+            <div class="citem"><div class="ava sm" style="background:#D85A30;">MO</div><div style="flex:1;min-width:0;"><div class="citem-name">Mike Ofori</div><div class="citem-prev">Thanks for the notes 🙏</div></div></div>
+            <div class="citem"><div class="ava sm" style="background:#185FA5;">SA</div><div style="flex:1;min-width:0;"><div class="citem-name">Sara Agyei</div><div class="citem-prev">Are you going to the fair?</div></div></div>
+          </div>
+          <div class="chat-thread">
+            <div class="chat-head"><div class="ava sm" style="background:#533489;">AD</div><div><div style="font-size:14px;font-weight:500;color:var(--txt);">Adwoa Duah</div><div style="font-size:11px;color:var(--txt2);">Computer Science · Level 400 · Online</div></div></div>
+            <div class="chat-msgs" id="cmsg">
+              <div class="msg in">Hey Kwame! Did you finish the algorithms assignment? The one on graph traversal?<div class="msg-time">10:14 AM</div></div>
+              <div class="msg out">Not yet 😅 struggling with the DFS implementation. You?<div class="msg-time">10:17 AM</div></div>
+              <div class="msg in">I finished it last night. I can share my notes, we can meet in the library at 3pm?<div class="msg-time">10:18 AM</div></div>
+              <div class="msg out">That would be great! See you there 🙏<div class="msg-time">10:20 AM</div></div>
+            </div>
+            <div class="chat-input-row"><input class="chat-in" id="cin" type="text" placeholder="Message Adwoa..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="btn primary" style="border-radius:20px;padding:7px 16px;" onclick="sendMsg()">Send</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div id="page-profile" class="page">
+        <div class="topbar"><div class="page-title">My Profile</div><button class="btn">Edit Profile</button></div>
+        <div class="profile-banner"></div>
+        <div class="profile-card">
+          <div class="profile-ava">KA</div>
+          <div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="btn primary sm">+ Connect</button></div>
+          <div class="pname">Kwame Asante</div>
+          <div class="pid">UDS/CS/21/0042 · Computer Science, Level 400</div>
+          <div class="pbio">Final year CS student passionate about building solutions for African communities. Working on UDS Connect as my final year project 🚀</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;"><span class="badge b-blue">Computer Science</span><span class="badge b-green">Tech Enthusiast</span><span class="badge b-gold">Finalist</span></div>
+          <div class="pstats"><div class="pstat"><div class="pstat-n">128</div><div class="pstat-l">Posts</div></div><div class="pstat"><div class="pstat-n">342</div><div class="pstat-l">Connections</div></div><div class="pstat"><div class="pstat-n">489</div><div class="pstat-l">Following</div></div></div>
+        </div>
+        <div class="section-label" style="margin-bottom:10px;">Recent Posts</div>
+        <div class="post-card">
+          <div class="post-head"><div class="ava" style="background:var(--g);">KA</div><div style="flex:1;"><div class="post-meta-name">Kwame Asante</div><div class="post-meta-time">Yesterday · 3:45 PM</div></div><span class="badge b-blue">Academic</span></div>
+          <div class="post-body">Just submitted my final year project proposal — building a campus social media platform for UDS students. Super excited about the journey ahead! 💻🎓</div>
+          <div class="post-actions"><button class="pact liked">❤️ 47</button><button class="pact">💬 12</button></div>
+        </div>
+      </div>
+
+      <!-- CLUBS -->
+      <div id="page-clubs" class="page">
+        <div class="topbar"><div class="page-title">Clubs & Communities</div><button class="btn primary">+ Create Club</button></div>
+        <div class="search-bar"><span style="color:var(--txt3);">🔍</span><input type="text" placeholder="Search clubs..."></div>
+        <div class="section-label" style="margin-bottom:12px;">My Clubs</div>
+        <div class="clubs-grid" style="margin-bottom:20px;">
+          <div class="club-card"><div class="club-icon">💻</div><div class="club-name">CS Students' Association</div><div class="club-mem">312 members · Member</div><div style="margin-top:10px;"><button class="btn sm pill" style="color:var(--g);border-color:var(--g);">Joined ✓</button></div></div>
+          <div class="club-card"><div class="club-icon">🌱</div><div class="club-name">GreenTech Club</div><div class="club-mem">89 members · Member</div><div style="margin-top:10px;"><button class="btn sm pill" style="color:var(--g);border-color:var(--g);">Joined ✓</button></div></div>
+        </div>
+        <div class="section-label" style="margin-bottom:12px;">Discover Clubs</div>
+        <div class="clubs-grid">
+          <div class="club-card"><div class="club-icon">⚽</div><div class="club-name">UDS Sports Club</div><div class="club-mem">540 members</div><div style="margin-top:10px;"><button class="btn primary sm pill">Join</button></div></div>
+          <div class="club-card"><div class="club-icon">📸</div><div class="club-name">Photography Society</div><div class="club-mem">167 members</div><div style="margin-top:10px;"><button class="btn primary sm pill">Join</button></div></div>
+          <div class="club-card"><div class="club-icon">🎤</div><div class="club-name">Drama & Arts Guild</div><div class="club-mem">205 members</div><div style="margin-top:10px;"><button class="btn primary sm pill">Join</button></div></div>
+          <div class="club-card"><div class="club-icon">📚</div><div class="club-name">Academic Excellence</div><div class="club-mem">421 members</div><div style="margin-top:10px;"><button class="btn primary sm pill">Join</button></div></div>
+        </div>
+      </div>
+
+      <!-- MARKETPLACE -->
+      <div id="page-market" class="page">
+        <div class="topbar"><div class="page-title">Marketplace</div><button class="btn primary">+ Sell Item</button></div>
+        <div class="search-bar"><span style="color:var(--txt3);">🔍</span><input type="text" placeholder="Search items for sale..."></div>
+        <div class="filter-row">
+          <button class="btn sm pill primary">All</button>
+          <button class="btn sm pill">Textbooks</button>
+          <button class="btn sm pill">Electronics</button>
+          <button class="btn sm pill">Clothing</button>
+          <button class="btn sm pill">Food</button>
+        </div>
+        <div class="items-grid">
+          <div class="item-card"><div class="item-img">📗</div><div class="item-body"><div class="item-name">Data Structures & Algorithms Textbook</div><div class="item-price">GH₵ 45</div><div class="item-seller">by Adwoa D.</div></div></div>
+          <div class="item-card"><div class="item-img">🎧</div><div class="item-body"><div class="item-name">Earphones (barely used)</div><div class="item-price">GH₵ 30</div><div class="item-seller">by Mike O.</div></div></div>
+          <div class="item-card"><div class="item-img">💻</div><div class="item-body"><div class="item-name">Laptop Bag (15 inch)</div><div class="item-price">GH₵ 60</div><div class="item-seller">by Esi A.</div></div></div>
+          <div class="item-card"><div class="item-img">📐</div><div class="item-body"><div class="item-name">Engineering Drawing Set</div><div class="item-price">GH₵ 25</div><div class="item-seller">by Kofi M.</div></div></div>
+          <div class="item-card"><div class="item-img">📘</div><div class="item-body"><div class="item-name">Business Law Textbook</div><div class="item-price">GH₵ 35</div><div class="item-seller">by Sara A.</div></div></div>
+          <div class="item-card"><div class="item-img">🖱️</div><div class="item-body"><div class="item-name">Wireless Mouse</div><div class="item-price">GH₵ 55</div><div class="item-seller">by James K.</div></div></div>
+        </div>
+      </div>
+
+      <!-- LOST & FOUND -->
+      <div id="page-lostfound" class="page">
+        <div class="topbar"><div class="page-title">Lost & Found</div><button class="btn primary">+ Report Item</button></div>
+        <div class="filter-row"><button class="btn sm pill primary">All</button><button class="btn sm pill">Lost</button><button class="btn sm pill">Found</button></div>
+        <div class="lf-card"><div class="lf-icon lf-lost">🧮</div><div style="flex:1;"><div class="lf-title">CASIO fx-991ES Scientific Calculator</div><div class="lf-desc">Lost between the Library and Faculty of Business. Blue cover, name "E. Badu" written inside.</div><div class="lf-meta"><span class="badge b-red">Lost</span><span style="font-size:12px;color:var(--txt3);">Today · Campus Main</span></div></div><button class="btn primary sm">Contact</button></div>
+        <div class="lf-card"><div class="lf-icon lf-found">🎒</div><div style="flex:1;"><div class="lf-title">Black Backpack (Jansport)</div><div class="lf-desc">Found near the Canteen. Contains some notes and a water bottle. Handed in to the Porters' Lodge.</div><div class="lf-meta"><span class="badge b-green">Found</span><span style="font-size:12px;color:var(--txt3);">Yesterday · Canteen Area</span></div></div><button class="btn sm">Claim</button></div>
+        <div class="lf-card"><div class="lf-icon lf-lost">🪪</div><div style="flex:1;"><div class="lf-title">Student ID Card</div><div class="lf-desc">Lost somewhere on campus. Name: Abigail Owusu, UDS/AGRIC/22/0117.</div><div class="lf-meta"><span class="badge b-red">Lost</span><span style="font-size:12px;color:var(--txt3);">2 days ago</span></div></div><button class="btn primary sm">Contact</button></div>
+        <div class="lf-card"><div class="lf-icon lf-found">📱</div><div style="flex:1;"><div class="lf-title">Tecno Camon Phone</div><div class="lf-desc">Found in the ICT Lab, Lecture Room 3. Screen cracked. Handed to CS Department Office.</div><div class="lf-meta"><span class="badge b-green">Found</span><span style="font-size:12px;color:var(--txt3);">3 days ago · ICT Lab</span></div></div><button class="btn sm">Claim</button></div>
+      </div>
+
+    </div><!-- /main-col -->
+
+    <!-- SIDEBAR (feed only) -->
+    <div class="side-col" id="side-panel">
+      <div class="card">
+        <div class="panel-title">Suggested Connections</div>
+        <div class="sugg-item"><div class="ava sm" style="background:#533489;">AD</div><div style="flex:1;"><div class="sugg-name">Adwoa Duah</div><div class="sugg-dept">CS · L400</div></div><button class="follow-btn">Follow</button></div>
+        <div class="sugg-item"><div class="ava sm" style="background:#D85A30;">MO</div><div style="flex:1;"><div class="sugg-name">Mike Ofori</div><div class="sugg-dept">Law · L300</div></div><button class="follow-btn">Follow</button></div>
+        <div class="sugg-item"><div class="ava sm" style="background:#185FA5;">SA</div><div style="flex:1;"><div class="sugg-name">Sara Agyei</div><div class="sugg-dept">Medicine · L200</div></div><button class="follow-btn">Follow</button></div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="panel-title">Trending on Campus</div>
+        <div class="trend-item">#UDSAgricFair <span>· 142 posts</span></div>
+        <div class="trend-item">#FinalYearProjects <span>· 89 posts</span></div>
+        <div class="trend-item">#UDSTamale <span>· 56 posts</span></div>
+        <div class="trend-item">#CampusLife <span>· 34 posts</span></div>
+      </div>
+    </div>
+
+  </div><!-- /app-body -->
+</div><!-- /app-screen -->
+
+<script>
+const ID_RE=/^UDS\/[A-Z]{2,4}\/\d{2}\/\d{4}$/i;
+const EM_RE=/^[^\s@]+@(st\.uds\.edu\.gh|uds\.edu\.gh)$/i;
+const FACS={CS:'Computer Science',AGRIC:'Agriculture',LAW:'Law',BUS:'Business & Management',MED:'Medicine',EDU:'Education',ENG:'Engineering',IDS:'Development Studies'};
+function pid(id){const p=id.toUpperCase().split('/');if(p.length!==4)return null;const[u,f,y,n]=p;if(u!=='UDS'||!/^[A-Z]{2,4}$/.test(f)||!/^\d{2}$/.test(y)||!/^\d{4}$/.test(n))return null;return{faculty:f,year:'20'+y,number:n};}
+function showBox(el,parsed){const fn=FACS[parsed.faculty]||(parsed.faculty+' Faculty');el.innerHTML=`<div class="id-row"><span class="id-k">University</span><span class="id-v">UDS — Tamale</span></div><div class="id-row"><span class="id-k">Faculty</span><span class="id-v">${fn}</span></div><div class="id-row"><span class="id-k">Year of Entry</span><span class="id-v">${parsed.year}</span></div><div class="id-row"><span class="id-k">Student No.</span><span class="id-v">#${parsed.number}</span></div><div style="margin-top:6px;font-size:11px;color:var(--g);font-weight:500;">✓ Valid UDS student ID detected</div>`;el.classList.add('show');}
+function vlid(inp,errId,boxId){const v=inp.value.trim();const err=document.getElementById(errId);const box=document.getElementById(boxId);const p=pid(v);if(!v){inp.className='finput';err.style.display='none';box.classList.remove('show');return;}if(p){inp.className='finput ok';err.style.display='none';showBox(box,p);}else{inp.className='finput err';err.style.display='block';box.classList.remove('show');}}
+function vemail(inp){const v=inp.value.trim();const err=document.getElementById('reg-email-err');const suc=document.getElementById('reg-email-suc');if(!v){inp.className='finput';err.style.display='none';suc.style.display='none';return;}if(EM_RE.test(v)){inp.className='finput ok';err.style.display='none';suc.style.display='block';}else{inp.className='finput err';err.style.display='block';suc.style.display='none';}}
+function switchTab(t){['login','signup'].forEach(x=>{document.getElementById('form-'+x).classList.toggle('active',x===t);document.getElementById('tab-'+x).classList.toggle('active',x===t);});}
+function doLogin(){const id=document.getElementById('lin-id').value.trim();const pw=document.getElementById('lin-pass').value;if(!pid(id)){alert('Please enter a valid UDS student ID.');return;}if(!pw){alert('Please enter your password.');return;}document.getElementById('login-s1').style.display='none';document.getElementById('login-suc').style.display='block';}
+function goReg2(){const id=document.getElementById('reg-id').value.trim();const em=document.getElementById('reg-email').value.trim();if(!pid(id)){alert('Please enter a valid UDS student ID.');return;}if(!EM_RE.test(em)){alert('Please enter a valid UDS email address.');return;}document.getElementById('reg-s1').style.display='none';document.getElementById('reg-s2').style.display='block';}
+function goReg3(){const em=document.getElementById('reg-email').value.trim();document.getElementById('otp-eml').textContent=em;document.getElementById('reg-s2').style.display='none';document.getElementById('reg-s3').style.display='block';document.querySelectorAll('.otp-in')[0].focus();}
+function om(el,i){if(el.value.length===1&&i<6)document.querySelectorAll('.otp-in')[i].focus();}
+function doRegister(){const vs=[...document.querySelectorAll('.otp-in')].map(i=>i.value);if(vs.some(v=>!v)){alert('Please enter the full 6-digit code.');return;}document.getElementById('reg-s3').style.display='none';document.getElementById('reg-suc').style.display='block';}
+function enterApp(){document.getElementById('auth-screen').style.display='none';document.getElementById('app-screen').style.display='block';}
+function navigate(pg,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+pg).classList.add('active');if(btn)btn.classList.add('active');document.getElementById('side-panel').style.display=pg==='feed'?'block':'none';}
+function tl(btn){btn.classList.toggle('liked');const sp=btn.querySelector('span');if(sp){const n=parseInt(sp.textContent);sp.textContent=btn.classList.contains('liked')?n+1:n-1;btn.childNodes[0].textContent=btn.classList.contains('liked')?'❤️ Like · ':'👍 Like · ';}}
+function addPost(){const ta=document.querySelector('.compose-ta');const t=ta.value.trim();if(!t)return;const c=document.createElement('div');c.className='post-card';c.innerHTML=`<div class="post-head"><div class="ava" style="background:var(--g);">KA</div><div style="flex:1;"><div class="post-meta-name">Kwame Asante</div><div class="post-meta-time">Just now</div></div><span class="badge b-new">New</span></div><div class="post-body">${t}</div><div class="post-actions"><button class="pact" onclick="tl(this)">👍 Like · <span>0</span></button><button class="pact">💬 Comment · 0</button><button class="pact">↗ Share</button></div>`;document.getElementById('feed-posts').prepend(c);ta.value='';}
+function sendMsg(){const inp=document.getElementById('cin');const t=inp.value.trim();if(!t)return;const m=document.getElementById('cmsg');const b=document.createElement('div');b.className='msg out';const now=new Date();b.innerHTML=`${t}<div class="msg-time">${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}</div>`;m.appendChild(b);m.scrollTop=m.scrollHeight;inp.value='';}
+</script>
+</body>
+</html>
